@@ -198,8 +198,8 @@ class CustomTTAReporter implements Reporter {
                 duration: step.duration || 0,
                 status: step.error ? 'failed' : 'passed',
                 startTime: new Date(step.startTime).toLocaleTimeString(),
-                error: step.error?.message,
-                stackTrace: step.error?.stack,
+                error: step.error?.message && this.stripAnsi(step.error.message),
+                stackTrace: step.error?.stack && this.stripAnsi(step.error.stack),
                 consoleLogs: [],
                 stepIndex: stepCounter,
                 videoStartTime: Math.max(0, videoStartTime),
@@ -243,7 +243,7 @@ class CustomTTAReporter implements Reporter {
         console.log('   ─────────────────────────────────────────────────────');
         console.log(`   ${statusIcon} RESULT: ${status.toUpperCase()} | Duration: ${testTime}`);
         if (result.error) {
-            console.log(`   ⚠️  Error: ${result.error.message?.substring(0, 80)}...`);
+            console.log(`   ⚠️  Error: ${this.stripAnsi(result.error.message ?? '').substring(0, 80)}...`);
         }
         console.log(`\n   📊 Running Total: ✅ ${this.suiteStats.passed} | ❌ ${this.suiteStats.failed} | ⏭️ ${this.suiteStats.skipped}`);
 
@@ -391,8 +391,8 @@ class CustomTTAReporter implements Reporter {
             logs: testLogs,
             video: videoPath,
             trace: tracePath,
-            error: result.error?.message,
-            errorStack: result.error?.stack,
+            error: result.error?.message && this.stripAnsi(result.error.message),
+            errorStack: result.error?.stack && this.stripAnsi(result.error.stack),
             tags: tagMatches,
         };
 
